@@ -1,0 +1,3 @@
+NAME    = gdal
+VERSION = 1.9.2
+RELEASE = 0
