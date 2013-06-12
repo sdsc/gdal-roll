@@ -61,19 +61,26 @@ REDHAT.ROOT = $(PWD)/../../
 -include $(ROCKSROOT)/etc/Rules.mk
 
 build:
+	mkdir -p $(PKGROOT)
+	mkdir -p $(ROOT)/$(PKGROOT)
+	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	tar zxvf $(NAME)-$(VERSION).tar.gz
 	( \
 	  cd $(NAME)-$(VERSION); \
-	  ./configure --prefix=$(ROOT)/$(PKGROOT); \
+	  ./configure --prefix=$(PKGROOT); \
 	  make \
 	)
+	umount $(PKGROOT)
 
 install::
+	mkdir -p $(PKGROOT)
 	mkdir -p $(ROOT)/$(PKGROOT)
+	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  cd $(NAME)-$(VERSION); \
 	  make install \
 	)
+	umount $(PKGROOT)
 	mkdir -p $(REDHAT.ROOT)/src/build-gdal-modules
 	cat gdal.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/gdal!g;s!VERSION!$(VERSION)!g" \
 	  > $(REDHAT.ROOT)/src/build-gdal-modules/$(NAME).module
